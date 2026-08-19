@@ -1,0 +1,62 @@
+An Introduction to Retrieval-Augmented Generation
+
+Large language models are trained once, on a fixed snapshot of text, and then
+frozen. Ask one about something that happened after its training cutoff, or
+about a private document it has never seen, and it will either say it does
+not know or, worse, produce a fluent and completely wrong answer. This
+failure mode is usually called hallucination, and it is the single biggest
+obstacle to using language models for anything where being wrong has a cost.
+
+Retrieval-augmented generation, or RAG, is the standard architectural answer
+to that problem. Instead of asking the model to answer purely from what it
+memorized during training, a RAG system first retrieves the most relevant
+passages from an external knowledge source, then hands those passages to the
+model along with the question, and asks it to answer using only that
+retrieved context. The model is no longer relying on memory; it is reading
+the answer out of material placed directly in front of it, in the same way a
+person might answer a question by first pulling the relevant page from a
+reference book rather than answering from recollection alone.
+
+The retrieval half of the system typically works through vector embeddings.
+Every passage of source text is converted into a high-dimensional numeric
+vector by an embedding model, chosen so that passages with similar meaning
+end up close together in that vector space, even if they do not share exact
+wording. A user's question is embedded the same way, and the system searches
+for the stored passages whose vectors are nearest to the question's vector.
+This is semantic search: it matches on meaning rather than on keyword
+overlap, which is what lets a question phrased one way retrieve an answer
+phrased quite differently.
+
+A production RAG pipeline has to make several concrete engineering decisions
+that a toy demo can skip. Source documents must be split into chunks small
+enough that each one embeds a single coherent idea, but large enough that a
+chunk is not so short it loses the surrounding context a citation needs to
+make sense. Chunks are usually given some overlap with their neighbors, so a
+sentence that happens to fall across a chunk boundary is not lost from every
+chunk it appears in. The number of chunks retrieved per question, and
+whether a similarity threshold filters out weak matches entirely, both
+affect whether the model receives too little context to answer well or too
+much irrelevant context that dilutes the passages that actually matter.
+
+Where a RAG system runs the language model itself is a separate decision
+from how it retrieves. Sending both the retrieved passages and the user's
+question to a cloud API is the simplest option, but it means the source
+documents leave the organization's own infrastructure on every single
+question asked. For regulated industries — banking, government, healthcare —
+that is frequently not permitted at all, regardless of what the cloud
+provider's data-handling policy promises. Running the language model locally,
+on hardware the organization controls, removes that constraint entirely: the
+documents, the embeddings, and the generated answer never cross a network
+boundary to a third party. The trade-off is that self-hosted inference is
+typically slower and more resource-constrained than a large cloud model, so
+the architecture has to be designed around that ceiling rather than assuming
+unlimited compute.
+
+Citations are what make a RAG answer trustworthy rather than merely
+plausible. Because the system knows exactly which chunks were retrieved and
+handed to the model, it can map each claim in the generated answer back to
+the specific passage it came from, and show that passage to the user
+alongside a similarity score. That traceability is the entire point of the
+architecture: it turns "the model said so" into "here is the exact sentence
+in the source document that supports this," which is a fundamentally
+different and more auditable kind of answer.

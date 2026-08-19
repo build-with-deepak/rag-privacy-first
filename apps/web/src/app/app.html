@@ -1,0 +1,38 @@
+@if (!auth.isAuthenticated()) {
+  <app-login />
+} @else {
+  <div class="page">
+    <header class="page-header">
+      <div class="session-row">
+        <span class="session-badge">Demo session</span>
+        <button class="logout" type="button" (click)="logout()">Sign out</button>
+      </div>
+      <p class="eyebrow">Privacy-First RAG</p>
+      <h1>Ask your document. Nothing leaves this server.</h1>
+      <p class="subtitle">
+        Retrieval-augmented generation on a self-hosted Llama 3 via Ollama — built for cases
+        where data can't leave the client's infrastructure. Upload a PDF or try the sample.
+      </p>
+    </header>
+
+    <main class="page-main">
+      @if (document(); as doc) {
+        <div class="document-bar">
+          <span>Document ready — {{ doc.chunkCount }} chunks indexed.</span>
+          <button class="reset-button" type="button" (click)="reset()">Try a different document</button>
+        </div>
+        <app-chat [documentId]="doc.documentId" />
+      } @else {
+        <app-document-upload (ingested)="onIngested($event)" />
+      }
+    </main>
+
+    <footer class="page-footer">
+      <a href="https://github.com/build-with-deepak/rag-privacy-first" target="_blank" rel="noopener">
+        View source on GitHub
+      </a>
+      <span class="dot">&middot;</span>
+      <a href="https://build-with-deepak.com" target="_blank" rel="noopener">build-with-deepak.com</a>
+    </footer>
+  </div>
+}

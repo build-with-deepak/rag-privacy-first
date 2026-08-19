@@ -1,0 +1,52 @@
+<div class="login-page">
+  <div class="login-card">
+    <p class="eyebrow">Privacy-First RAG</p>
+    <h1>Ask your document. Nothing leaves this server.</h1>
+    <p class="subtitle">
+      Retrieval-augmented generation on a self-hosted Llama 3 via Ollama — for cases
+      where data can't leave the client's infrastructure. Try it with a real session
+      against the real pipeline: upload a PDF or use the sample document.
+    </p>
+
+    <button class="demo-button" type="button" (click)="demoLogin()" [disabled]="isLoggingIn()">
+      {{ isLoggingIn() ? 'Starting your session…' : 'Continue with demo account' }}
+    </button>
+    <p class="demo-note">
+      One click, no signup. Demo sessions last 2 hours, and any document you upload is
+      automatically purged one hour after upload — that's the privacy guarantee this
+      demo exists to show.
+    </p>
+
+    <div class="divider"><span>or</span></div>
+
+    <button class="register-button" type="button" (click)="showRegisterModal.set(true)">
+      Register an account
+    </button>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+  </div>
+
+  <footer class="login-footer">
+    <a href="https://github.com/build-with-deepak/rag-privacy-first" target="_blank" rel="noopener">View source on GitHub</a>
+    <span class="dot">&middot;</span>
+    <a href="https://build-with-deepak.com" target="_blank" rel="noopener">build-with-deepak.com</a>
+  </footer>
+</div>
+
+@if (showRegisterModal()) {
+  <div class="modal-backdrop" (click)="showRegisterModal.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="register-title">
+      <h2 id="register-title">Registration is in progress</h2>
+      <p>
+        Registered accounts — where your documents persist under your control instead
+        of the demo's one-hour purge — are being implemented right now.
+      </p>
+      <p>Until then, the demo account gives you the full, real experience: same pipeline, same models, same citations.</p>
+      <button class="modal-close" type="button" (click)="showRegisterModal.set(false)">
+        Use the demo account
+      </button>
+    </div>
+  </div>
+}

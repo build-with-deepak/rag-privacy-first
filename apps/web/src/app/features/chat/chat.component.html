@@ -1,0 +1,68 @@
+<div class="chat">
+  <form class="ask-row" (submit)="$event.preventDefault(); ask()">
+    <input
+      class="question-input"
+      type="text"
+      placeholder="Ask a question about this document…"
+      [(ngModel)]="question"
+      name="question"
+      [disabled]="isStreaming()"
+      maxlength="1000"
+    />
+    <button class="ask-button" type="submit" [disabled]="isStreaming() || !question().trim()">
+      {{ isStreaming() ? 'Thinking…' : 'Ask' }}
+    </button>
+  </form>
+
+  @if (queuePosition(); as position) {
+    <p class="queue-banner">
+      Queued behind {{ position - 1 }} other request{{ position - 1 === 1 ? '' : 's' }} — position
+      {{ position }}. The demo caps concurrent generations so everyone's answer stays fast.
+    </p>
+  }
+
+  @if (errorMessage(); as message) {
+    <p class="error-banner">{{ message }}</p>
+  }
+
+  @if (chunks().length > 0) {
+    <div class="retrieval-panel">
+      <p class="panel-title">
+        Retrieved {{ chunks().length }} passage{{ chunks().length === 1 ? '' : 's' }}
+        @if (retrievalMs(); as ms) {
+          <span class="latency">in {{ ms }}ms</span>
+        }
+      </p>
+      <ol class="chunk-list">
+        @for (chunk of chunks(); track chunk.chunkIndex) {
+          <li class="chunk">
+            <div class="chunk-header">
+              <span class="chunk-index">[{{ $index + 1 }}]</span>
+              <span class="chunk-score">similarity {{ formatScore(chunk.score) }}</span>
+            </div>
+            <p class="chunk-text">{{ chunk.text }}</p>
+          </li>
+        }
+      </ol>
+    </div>
+  }
+
+  @if (answer()) {
+    <div class="answer-panel">
+      <p class="panel-title">
+        Answer
+        @if (generationMs(); as ms) {
+          <span class="latency">generation {{ ms }}ms</span>
+        }
+        @if (totalMs(); as ms) {
+          <span class="latency">total {{ ms }}ms</span>
+        }
+      </p>
+      <p class="answer-text">{{ answer() }}@if (isStreaming()) {<span class="cursor">&#9611;</span>}</p>
+      <p class="citation-hint">
+        Numbers like [1] refer to the retrieved passages above, so every claim
+        traces back to an exact source chunk.
+      </p>
+    </div>
+  }
+</div>

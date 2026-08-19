@@ -1,0 +1,36 @@
+<div class="upload-card">
+  <div
+    class="dropzone"
+    [class.dragging]="isDragging()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+  >
+    <p class="dropzone-title">Drop a PDF here, or</p>
+    <label class="file-button">
+      Choose a file
+      <input type="file" accept="application/pdf" (change)="onFileSelected($event)" hidden />
+    </label>
+    <p class="dropzone-hint">PDF only, up to 15MB. Parsed in memory — never written to disk.</p>
+  </div>
+
+  <div class="divider"><span>or</span></div>
+
+  <button class="sample-button" type="button" (click)="useSample()" [disabled]="isUploading()">
+    Try the sample document instead
+  </button>
+
+  @if (isUploading()) {
+    <p class="status status-uploading">Reading and embedding the document&hellip;</p>
+  }
+
+  @if (error()) {
+    <p class="status status-error">{{ error() }}</p>
+  }
+
+  <p class="privacy-note">
+    Everything runs on this server — nothing is sent to a third-party model
+    provider. Your document's vectors are automatically purged one hour after
+    upload.
+  </p>
+</div>
