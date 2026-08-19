@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from './core/auth.service';
+import { BrandFooterComponent } from './core/brand-footer.component';
 import { ChatComponent } from './features/chat/chat.component';
 import { DocumentUploadComponent } from './features/document-upload/document-upload.component';
 import { LoginComponent } from './features/login/login.component';
@@ -7,7 +8,7 @@ import { DocumentResponse } from './core/models';
 
 @Component({
   selector: 'app-root',
-  imports: [DocumentUploadComponent, ChatComponent, LoginComponent],
+  imports: [DocumentUploadComponent, ChatComponent, LoginComponent, BrandFooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
