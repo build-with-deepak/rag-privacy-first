@@ -67,6 +67,32 @@ h1 {
   margin: 0;
 }
 
+.explainer-panel {
+  max-width: 40rem;
+  width: 100%;
+  margin: 0 auto 2rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .explainer-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+}
+
 .page-main {
   flex: 1;
   display: flex;

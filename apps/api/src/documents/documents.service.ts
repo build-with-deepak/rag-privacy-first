@@ -100,7 +100,7 @@ export class DocumentsService {
           this.ingestText(
             SAMPLE_DOCUMENT_ID,
             text,
-            'sample-document.txt',
+            'RAG Engineering Notes (sample document)',
             SAMPLE_TTL_MS,
           ),
         )
@@ -173,6 +173,7 @@ export class DocumentsService {
     return {
       documentId: record.documentId,
       chunkCount: record.chunkCount,
+      originalName: record.originalName,
       expiresAt: new Date(record.expiresAt).toISOString(),
     };
   }

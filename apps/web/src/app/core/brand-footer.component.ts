@@ -34,12 +34,30 @@ interface DemoLink {
         </a>
 
         <p class="byline">
-          Built by <strong>Deepak Kumar Jha</strong> — Senior Full-Stack Engineer · Technical Lead
+          Built by <strong>Deepak Kumar Jha</strong> — Technical Lead · Senior Full-Stack Engineer
         </p>
-        <p class="tagline">
-          A live demo from the <a href="https://build-with-deepak.com" target="_blank" rel="noopener">build-with-deepak.com</a>
-          portfolio — production AI engineering, not prototypes.
+        <p class="stat-line">13 years · Node.js · Angular · React · AWS · GCP</p>
+        <p class="availability-line">
+          Open to full-time Technical Lead roles — Delhi NCR and Dubai/UAE. Available in 15 days.
         </p>
+
+        <div class="cta-row">
+          <a
+            class="cta-button primary"
+            href="https://build-with-deepak.com/Deepak_Kumar_Jha_Technical_Lead.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download CV
+          </a>
+          <a class="cta-button" href="mailto:entr.deepakjha@gmail.com">Email</a>
+          <a class="cta-button" href="https://www.linkedin.com/in/build-with-deepak" target="_blank" rel="noopener">
+            LinkedIn
+          </a>
+          <a class="cta-button" href="https://build-with-deepak.com" target="_blank" rel="noopener">
+            Full Profile
+          </a>
+        </div>
 
         <div class="social-row">
           <a href="https://www.linkedin.com/in/build-with-deepak" target="_blank" rel="noopener me" aria-label="LinkedIn" title="LinkedIn">
@@ -66,15 +84,23 @@ interface DemoLink {
           <a href="https://build-with-deepak.com/contact" target="_blank" rel="noopener">Hire Me</a>
         </nav>
 
-        <div class="suite-row">
-          <span class="suite-label">The demo suite:</span>
-          @for (demo of demos; track demo.key) {
-            @if (demo.key === current()) {
-              <span class="suite-current">{{ demo.name }} (you're here)</span>
-            } @else {
-              <a [href]="demo.url" target="_blank" rel="noopener">{{ demo.name }}</a>
+        <div class="suite-block">
+          <span class="suite-label">The demo suite</span>
+          <div class="suite-cards">
+            @for (demo of demos; track demo.key) {
+              @if (demo.key === current()) {
+                <span class="suite-card current" aria-current="page">
+                  <span class="suite-card-name">{{ demo.name }}</span>
+                  <span class="suite-card-tag">you're here</span>
+                </span>
+              } @else {
+                <a class="suite-card" [href]="demo.url" target="_blank" rel="noopener">
+                  <span class="suite-card-name">{{ demo.name }}</span>
+                  <span class="suite-card-tag">try it →</span>
+                </a>
+              }
             }
-          }
+          </div>
           <a class="source-link" [href]="currentRepo()" target="_blank" rel="noopener">View source on GitHub</a>
         </div>
       </div>
@@ -128,19 +154,52 @@ interface DemoLink {
       }
     }
 
-    .tagline {
-      margin: 0;
+    .stat-line {
+      margin: 0.25rem 0 0;
       font-size: 0.8rem;
       color: var(--text-muted);
-      line-height: 1.55;
+    }
 
-      a {
+    .availability-line {
+      margin: 0.35rem 0 0;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      max-width: 32rem;
+      line-height: 1.5;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 1.1rem;
+    }
+
+    .cta-button {
+      padding: 0.5rem 1.1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-raised);
+      color: var(--text);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        border-color: var(--accent);
         color: var(--accent);
-        font-weight: 600;
-        text-decoration: none;
+      }
+
+      &.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
 
         &:hover {
-          text-decoration: underline;
+          opacity: 0.9;
+          color: white;
         }
       }
     }
@@ -185,26 +244,15 @@ interface DemoLink {
       }
     }
 
-    .suite-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: baseline;
-      gap: 0.4rem 1rem;
-      margin-top: 0.75rem;
-      padding-top: 0.9rem;
-      border-top: 1px solid var(--border);
+    .suite-block {
       width: 100%;
-      font-size: 0.75rem;
-
-      a {
-        color: var(--text-muted);
-        text-decoration: none;
-
-        &:hover {
-          color: var(--accent);
-        }
-      }
+      margin-top: 0.9rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
     }
 
     .suite-label {
@@ -215,13 +263,57 @@ interface DemoLink {
       font-size: 0.65rem;
     }
 
-    .suite-current {
+    .suite-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.6rem;
+      width: 100%;
+
+      @media (max-width: 30rem) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .suite-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.75rem 0.6rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: var(--surface-raised);
+      text-decoration: none;
+      text-align: center;
+
+      &:hover {
+        border-color: var(--accent);
+      }
+
+      &.current {
+        border-color: var(--accent);
+        background: var(--accent-bg);
+      }
+    }
+
+    .suite-card-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .suite-card-tag {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .suite-card.current .suite-card-tag {
       color: var(--accent);
       font-weight: 600;
     }
 
     .source-link {
       font-weight: 600;
+      font-size: 0.75rem;
     }
   `,
 })

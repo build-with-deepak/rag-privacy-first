@@ -14,6 +14,28 @@
     </button>
   </form>
 
+  @if (isSampleDocument()) {
+    <div class="example-row">
+      <span class="example-label">Try asking:</span>
+      @for (prompt of examplePrompts; track prompt) {
+        <button
+          class="example-chip"
+          type="button"
+          [disabled]="isStreaming()"
+          (click)="askExample(prompt)"
+        >
+          {{ prompt }}
+        </button>
+      }
+    </div>
+  }
+
+  <p class="data-note">
+    Documents you upload are held in memory only long enough to chunk and embed them, then
+    discarded — only the resulting vectors are stored, purged automatically one hour after
+    upload, and never shared with another visitor's session.
+  </p>
+
   @if (queuePosition(); as position) {
     <p class="queue-banner">
       Queued behind {{ position - 1 }} other request{{ position - 1 === 1 ? '' : 's' }} — position
@@ -29,9 +51,16 @@
     <div class="retrieval-panel">
       <p class="panel-title">
         Retrieved {{ chunks().length }} passage{{ chunks().length === 1 ? '' : 's' }}
+        @if (documentName(); as name) {
+          <span class="source-doc">from {{ name }}</span>
+        }
         @if (retrievalMs(); as ms) {
           <span class="latency">in {{ ms }}ms</span>
         }
+      </p>
+      <p class="proof-hint">
+        This is the actual retrieval trail — the exact source passages the model was given,
+        not a description of what it did. Nothing below is generated; it's what was found.
       </p>
       <ol class="chunk-list">
         @for (chunk of chunks(); track chunk.chunkIndex) {

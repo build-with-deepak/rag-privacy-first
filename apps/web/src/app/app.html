@@ -1,3 +1,5 @@
+<app-site-header />
+
 @if (!auth.isAuthenticated()) {
   <app-login />
 } @else {
@@ -15,18 +17,30 @@
       </p>
     </header>
 
+    <section class="explainer-panel">
+      <p class="explainer-title">What this demonstrates</p>
+      <p>
+        Companies sitting on thousands of internal documents want AI search over them — but many
+        legally cannot send that data to OpenAI or Google. This runs retrieval-augmented
+        generation entirely on self-hosted Llama 3 via Ollama. The documents never leave the
+        server. Hard part: getting citation accuracy and retrieval quality out of a local model
+        without a cloud API to fall back on.
+      </p>
+    </section>
+
     <main class="page-main">
       @if (document(); as doc) {
         <div class="document-bar">
-          <span>Document ready — {{ doc.chunkCount }} chunks indexed.</span>
+          <span>Document ready — {{ doc.chunkCount }} chunks indexed{{ doc.originalName ? ' from ' + doc.originalName : '' }}.</span>
           <button class="reset-button" type="button" (click)="reset()">Try a different document</button>
         </div>
-        <app-chat [documentId]="doc.documentId" />
+        <app-chat [documentId]="doc.documentId" [documentName]="doc.originalName" />
       } @else {
         <app-document-upload (ingested)="onIngested($event)" />
       }
     </main>
 
+    <app-how-its-built />
   </div>
 }
 

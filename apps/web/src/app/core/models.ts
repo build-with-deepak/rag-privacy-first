@@ -11,9 +11,15 @@ export interface DemoSession {
 export interface DocumentResponse {
   documentId: string;
   chunkCount: number;
+  /** Display name of the ingested document — the uploaded filename, or the sample's label. */
+  originalName?: string;
   /** ISO 8601 */
   expiresAt: string;
 }
+
+/** Mirrors the API's fixed sample document ID — used to decide whether to show the
+ * guided example prompts, which are worded against that specific document's content. */
+export const SAMPLE_DOCUMENT_ID = 'sample-document';
 
 export interface RetrievedChunk {
   chunkIndex: number;

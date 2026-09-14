@@ -1,8 +1,21 @@
-import { Component, OnDestroy, inject, input, signal } from '@angular/core';
+import { Component, OnDestroy, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { QueryService } from '../../core/query.service';
-import { RetrievedChunk } from '../../core/models';
+import { RetrievedChunk, SAMPLE_DOCUMENT_ID } from '../../core/models';
+
+/**
+ * Worded to require synthesis across more than one section of the sample
+ * document (see apps/api/assets/sample-document.txt) — a single-fact lookup
+ * wouldn't demonstrate retrieval the way a question spanning two sections
+ * does, since the model has to draw on several of the four retrieved chunks
+ * at once rather than restate the one passage that happens to match.
+ */
+const EXAMPLE_PROMPTS = [
+  'What problem does RAG solve, and how do citations make its answers trustworthy?',
+  "Why would a bank or hospital run the model locally instead of calling a cloud API, and what's the trade-off?",
+  'How do chunking and retrieval work together, and why does chunk overlap matter?',
+];
 
 @Component({
   selector: 'app-chat',
@@ -15,6 +28,13 @@ export class ChatComponent implements OnDestroy {
   private subscription: Subscription | undefined;
 
   readonly documentId = input.required<string>();
+  readonly documentName = input<string | undefined>(undefined);
+
+  /** The guided prompts are worded against the sample document's content —
+   * only shown when that's what's actually loaded, so they don't mislead a
+   * visitor who uploaded their own PDF. */
+  readonly isSampleDocument = computed(() => this.documentId() === SAMPLE_DOCUMENT_ID);
+  readonly examplePrompts = EXAMPLE_PROMPTS;
 
   readonly question = signal('');
   readonly isStreaming = signal(false);
@@ -25,6 +45,13 @@ export class ChatComponent implements OnDestroy {
   readonly totalMs = signal<number | null>(null);
   readonly answer = signal('');
   readonly errorMessage = signal<string | null>(null);
+
+  /** Populates the input and runs it in one click — no typing required for a first-time visitor. */
+  askExample(prompt: string): void {
+    if (this.isStreaming()) return;
+    this.question.set(prompt);
+    this.ask();
+  }
 
   ask(): void {
     const question = this.question().trim();
