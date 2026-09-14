@@ -67,7 +67,7 @@ import { Component, signal } from '@angular/core';
   `,
   styles: `
     .built-panel {
-      max-width: 40rem;
+      max-width: 44rem;
       width: 100%;
       margin: 2rem auto 0;
       border: 1px solid var(--border);
