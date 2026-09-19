@@ -1,0 +1,88 @@
+Gulf Business Services — Financial Operations Handbook
+
+SECTION 1: ORGANIZATION OVERVIEW
+
+Gulf Business Services provides outsourced back-office functions —
+accounting, payroll administration, and vendor management — to mid-sized
+clients across the UAE. This handbook covers the internal financial
+policies employees and approved vendors operate under: expense
+reimbursement, procurement, and the internal controls that govern who can
+approve what.
+
+SECTION 2: EXPENSE REIMBURSEMENT POLICY
+
+An expense is reimbursable if it was incurred for a legitimate business
+purpose, is supported by an itemized receipt (a credit card statement
+line alone is not sufficient), and is submitted within 30 days of the
+expense date. Expenses submitted after 30 days require a written
+justification and manager approval before they can be processed at all —
+they are not automatically rejected, but they do not follow the standard
+approval path in Section 3.
+
+Client entertainment expenses are reimbursable up to AED 500 per event
+without additional approval; above that threshold, the standard approval
+chain in Section 3 applies regardless of expense category. Personal
+expenses, even if incurred during a business trip, are never reimbursable
+— a business trip does not make an unrelated personal purchase a business
+expense.
+
+SECTION 3: APPROVAL THRESHOLDS AND CHAINS
+
+Expenses and purchases route through approval based on amount, not
+category. Under AED 1,000: approved by the employee's direct manager only.
+AED 1,000 to AED 10,000: requires both the direct manager and the
+department head. Above AED 10,000: requires the direct manager, the
+department head, and the Finance Director. No single approver may approve
+their own submitted expense or a purchase they initiated, regardless of
+amount — this is a fixed control and has no exception path, because it is
+the control that prevents a single person from both initiating and
+approving the same spend.
+
+SECTION 4: PROCUREMENT POLICY
+
+A new vendor cannot be paid until procurement has completed vendor
+onboarding, which requires: a signed vendor agreement, a valid trade
+license on file, and banking details confirmed through a callback to the
+vendor's registered phone number — not the phone number provided in the
+same email as the banking details, because that callback step exists
+specifically to catch business email compromise attempts where an
+attacker requests a change of banking details from a compromised or
+spoofed account.
+
+Purchase orders above AED 10,000 require two competing quotes on file
+before the purchase order is raised, unless the vendor is a sole-source
+provider (the only vendor capable of supplying the item or service), in
+which case a sole-source justification memo replaces the second quote
+requirement and must be approved by the department head.
+
+SECTION 5: VENDOR AGREEMENT BASICS
+
+Standard vendor agreements specify payment terms of net-30 from invoice
+receipt, require the vendor to carry appropriate liability insurance for
+the services provided, and include a right-to-audit clause allowing Gulf
+Business Services to review the vendor's records relevant to the
+engagement. Payment terms shorter than net-30 require Finance Director
+approval, because shortened terms reduce the company's own cash-flow
+buffer and are not granted as a default courtesy.
+
+SECTION 6: INTERNAL CONTROLS
+
+Bank account signatories are reviewed quarterly and require two
+authorized signatures for any wire transfer above AED 50,000. Below that
+threshold, one signatory may release a wire transfer, but the transfer is
+still logged and reviewed by the second signatory retroactively within
+one business day. Any wire transfer request that changes a vendor's
+previously-confirmed banking details is treated as a new vendor
+onboarding event under Section 4, in full, regardless of how long the
+vendor relationship has existed — an established vendor relationship is
+not, by itself, sufficient reason to skip the banking-details callback.
+
+SECTION 7: RECORD RETENTION
+
+Financial records supporting expense reimbursements, purchase orders, and
+vendor payments are retained for 7 years from the date of the
+transaction, in line with UAE statutory record-keeping requirements for
+this business's income tax and audit obligations. Records are stored in
+the document management system with the originating transaction ID as the
+retrieval key, so any transaction can be traced back to its supporting
+documentation without a manual search.

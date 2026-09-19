@@ -58,19 +58,6 @@ export class DocumentUploadComponent {
     this.auth.logout();
   }
 
-  async useSample(): Promise<void> {
-    this.error.set(null);
-    this.isUploading.set(true);
-    try {
-      const result = await this.documents.useSample();
-      this.ingested.emit(result);
-    } catch (err) {
-      this.error.set(this.extractMessage(err));
-    } finally {
-      this.isUploading.set(false);
-    }
-  }
-
   private async handleFile(file: File): Promise<void> {
     this.error.set(null);
 

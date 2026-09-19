@@ -14,10 +14,10 @@
     </button>
   </form>
 
-  @if (isSampleDocument()) {
+  @if (examplePrompts().length > 0) {
     <div class="example-row">
       <span class="example-label">Try asking:</span>
-      @for (prompt of examplePrompts; track prompt) {
+      @for (prompt of examplePrompts(); track prompt) {
         <button
           class="example-chip"
           type="button"
@@ -43,11 +43,26 @@
     </p>
   }
 
-  @if (statusMessage(); as status) {
-    <p class="status-line" aria-live="polite">
-      <span class="status-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-      {{ status }}
-    </p>
+  @if (progressSteps().length > 0) {
+    <ol class="progress-steps" aria-live="polite">
+      @for (step of progressSteps(); track step.label) {
+        <li class="progress-step" [class.step-done]="step.state === 'done'" [class.step-active]="step.state === 'active'">
+          <span class="step-marker" aria-hidden="true">
+            @if (step.state === 'done') {
+              ✓
+            } @else if (step.state === 'active') {
+              <span class="status-dots"><span></span><span></span><span></span></span>
+            }
+          </span>
+          <span class="step-text">
+            {{ step.label }}
+            @if (step.meta) {
+              <span class="step-meta">— {{ step.meta }}</span>
+            }
+          </span>
+        </li>
+      }
+    </ol>
   }
 
   @if (errorMessage(); as message) {

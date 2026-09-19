@@ -1,0 +1,87 @@
+Metro Properties — Property Operations Handbook
+
+SECTION 1: PORTFOLIO OVERVIEW
+
+Metro Properties manages residential and mixed-use buildings across three
+communities: Dubai Marina, Business Bay, and Downtown Dubai. Each building
+has an on-site facilities team and a shared pool of approved vendors for
+work that falls outside what the on-site team can handle directly. This
+handbook is the reference facilities staff and the tenant-relations team
+use to decide how a maintenance request should be routed and resolved.
+
+SECTION 2: MAINTENANCE REQUEST INTAKE
+
+A tenant maintenance request must include: the unit number, a description
+of the issue, and — for anything involving water, electricity, or gas —
+whether the issue is currently active (ongoing leak, power out) or
+resolved but needs repair (a leak that has stopped, a socket that no
+longer works). Active issues involving water or gas are treated as
+emergencies regardless of time of day; resolved issues are scheduled
+during standard business hours. A request missing the unit number or a
+usable description is returned to the tenant for clarification before it
+is logged, because an unclear request cannot be routed to the right
+vendor category.
+
+SECTION 3: MAINTENANCE ESCALATION PROCESS
+
+Every logged request is first assessed by the on-site facilities team to
+determine whether it can be resolved in-house or requires a specialist
+vendor. In-house resolution covers minor items: a stuck door, a loose
+fixture, a clogged drain that responds to standard clearing. If the
+on-site team cannot resolve the issue within one visit, or the issue falls
+into a specialist category (HVAC, elevator, structural, pest control), the
+request is escalated to the matching approved vendor from Section 4.
+
+An escalated request that is not acknowledged by the assigned vendor within
+2 hours (for emergencies) or 1 business day (for scheduled work) is
+automatically re-escalated to the property manager, who selects a backup
+vendor from the same category. This exists because a single unresponsive
+vendor should never be allowed to stall an emergency indefinitely.
+
+SECTION 4: APPROVED VENDORS BY CATEGORY
+
+HVAC emergencies (no cooling, no heating, unusual noise or smell from a
+unit) are handled exclusively by Gulf Climate Services, the building's
+contracted HVAC vendor, who commits to a 2-hour response window for
+emergencies and next-business-day for non-emergency HVAC requests.
+Elevator issues are handled by Skyline Elevator Co. under a maintenance
+contract that includes mandatory same-day response for any elevator
+reported stuck with a passenger inside. Pest control is handled by
+GreenGuard Pest Solutions on a scheduled quarterly basis per building, plus
+on-demand callouts for active infestations. Plumbing and electrical work
+beyond what the on-site team can resolve is handled by a rotating panel of
+three licensed contractors, assigned by whichever has current availability
+at the time of escalation.
+
+SECTION 5: BUILDING POLICIES
+
+Common-area renovations or unit-interior work that could affect building
+systems (plumbing, electrical, load-bearing walls) require written
+approval from the property manager before work begins, along with proof
+that the tenant's contractor carries liability insurance. Noise-generating
+work (drilling, hammering) is restricted to 9:00 AM–6:00 PM on weekdays
+and 10:00 AM–4:00 PM on Saturdays, with no exceptions during the two weeks
+before and after major public holidays, when buildings receive the highest
+volume of unrelated noise complaints.
+
+SECTION 6: LEASE AND SERVICE DOCUMENTATION
+
+Every lease includes a service-level appendix specifying which
+maintenance categories are covered by the building's service charge
+(structural, common-area, building systems) versus which are the tenant's
+own responsibility (in-unit appliances not provided by the building,
+cosmetic damage caused by the tenant). A maintenance request for an
+item the tenant is responsible for is still logged and routed normally,
+but the resulting invoice — if a vendor visit is required — is billed to
+the tenant rather than the building's maintenance budget.
+
+SECTION 7: VENDOR CONTRACT TERMS
+
+All approved vendors operate under a standard contract requiring: current
+trade license and insurance on file with the property manager, a defined
+response-time commitment per request category (see Section 4), and
+quarterly performance review against that commitment. A vendor that
+misses its committed response time on more than 15% of requests in a
+quarter is placed on a corrective action plan; a second consecutive
+quarter of missed targets is grounds for removal from the approved vendor
+list.

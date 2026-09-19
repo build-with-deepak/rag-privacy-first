@@ -10,20 +10,18 @@ function pdfFile(sizeBytes: number, type = 'application/pdf'): File {
 
 describe('DocumentUploadComponent', () => {
   let uploadPdf: ReturnType<typeof vi.fn>;
-  let useSample: ReturnType<typeof vi.fn>;
   let logout: ReturnType<typeof vi.fn>;
   let canUpload: boolean;
 
   beforeEach(async () => {
     uploadPdf = vi.fn();
-    useSample = vi.fn();
     logout = vi.fn();
     canUpload = true;
 
     await TestBed.configureTestingModule({
       imports: [DocumentUploadComponent],
       providers: [
-        { provide: DocumentsService, useValue: { uploadPdf, useSample } },
+        { provide: DocumentsService, useValue: { uploadPdf } },
         { provide: AuthService, useValue: { canUpload: () => canUpload, logout } },
       ],
     }).compileComponents();
@@ -95,24 +93,6 @@ describe('DocumentUploadComponent', () => {
     expect(component.error()).toBe('No extractable text found in this PDF.');
   });
 
-  it('useSample() calls the service and emits the ingested document', async () => {
-    const response: DocumentResponse = {
-      documentId: 'sample-document',
-      chunkCount: 5,
-      expiresAt: new Date().toISOString(),
-    };
-    useSample.mockResolvedValue(response);
-
-    const fixture = create();
-    const component = fixture.componentInstance;
-    const emitted: DocumentResponse[] = [];
-    component.ingested.subscribe((doc) => emitted.push(doc));
-
-    await component.useSample();
-
-    expect(emitted).toEqual([response]);
-  });
-
   /**
    * The demo account's restriction, from the interface's side.
    *
@@ -132,14 +112,6 @@ describe('DocumentUploadComponent', () => {
       expect(host.querySelector('input[type="file"]')).toBeNull();
       expect(host.querySelector('.locked')).not.toBeNull();
       expect(host.querySelector('.locked-cta')?.textContent).toContain('Create a free account');
-    });
-
-    it('still offers the sample document, so the demo remains usable', () => {
-      const host = create().nativeElement as HTMLElement;
-      const sample = host.querySelector('.sample-button');
-
-      expect(sample).not.toBeNull();
-      expect(sample?.textContent).toContain('sample document');
     });
 
     it('ends the shared demo session when registration is chosen', () => {

@@ -231,7 +231,7 @@ pnpm --filter web build && pnpm --filter web test
    VPS's Ollama instance (see the comment in `docker-compose.yml` about
    `host.docker.internal`).
 2. `docker compose up -d --build`. This starts `qdrant`, `api` and `web`;
-   only `web` binds a host port, and only on `127.0.0.1:8090` — nothing here
+   only `web` binds a host port, and only on `127.0.0.1:8091` — nothing here
    is exposed to the public internet directly.
 3. Copy `nginx/rag.build-with-deepak.com.conf` to this VPS's
    `/etc/nginx/sites-available/`, symlink it into `sites-enabled`, and run

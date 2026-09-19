@@ -6,6 +6,10 @@ import { DemoHeaderComponent } from './core/demo-header.component';
 import { HowItsBuiltComponent } from './core/how-its-built.component';
 import { ChatComponent } from './features/chat/chat.component';
 import { DocumentUploadComponent } from './features/document-upload/document-upload.component';
+import {
+  ScenarioPickerComponent,
+  ScenarioSelection,
+} from './features/scenario-picker/scenario-picker.component';
 import { DemoGuideComponent } from './core/demo-guide.component';
 import { DocumentResponse } from './core/models';
 
@@ -13,6 +17,7 @@ import { DocumentResponse } from './core/models';
   selector: 'app-root',
   imports: [
     DocumentUploadComponent,
+    ScenarioPickerComponent,
     ChatComponent,
     AuthPanelComponent,
     DemoFooterComponent,
@@ -26,17 +31,26 @@ import { DocumentResponse } from './core/models';
 export class App {
   readonly auth = inject(AuthService);
   readonly document = signal<DocumentResponse | null>(null);
+  readonly examplePrompts = signal<string[]>([]);
+
+  onScenarioSelected(selection: ScenarioSelection): void {
+    this.document.set(selection.document);
+    this.examplePrompts.set(selection.suggestedQuestions);
+  }
 
   onIngested(doc: DocumentResponse): void {
     this.document.set(doc);
+    this.examplePrompts.set([]);
   }
 
   reset(): void {
     this.document.set(null);
+    this.examplePrompts.set([]);
   }
 
   logout(): void {
     this.auth.logout();
     this.document.set(null);
+    this.examplePrompts.set([]);
   }
 }

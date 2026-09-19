@@ -13,6 +13,8 @@ import { PdfExtractionService } from './pdf-extraction.service';
 import { OllamaService } from '../ollama/ollama.service';
 import { QdrantService } from '../qdrant/qdrant.service';
 import { DocumentResponseDto } from './dto/document-response.dto';
+import { ScenarioCatalogDto } from './dto/scenario-catalog.dto';
+import { SCENARIOS, ScenarioKey, getScenario } from './scenarios';
 
 interface DocumentRecord {
   documentId: string;
@@ -20,18 +22,18 @@ interface DocumentRecord {
   createdAt: number;
   expiresAt: number;
   chunkCount: number;
+  scenarioKey?: ScenarioKey;
+  scenarioDescription?: string;
 }
 
-/** Fixed ID so repeat visitors hit the same, already-embedded sample. */
-const SAMPLE_DOCUMENT_ID = 'sample-document';
 /**
- * The sample is this repo's own content, not a visitor's upload — the
- * 1-hour privacy guarantee on the page is about user data, not about the
- * demo fixture. It still gets a bound (24h) rather than living forever, so
- * an unattended demo doesn't accumulate an ever-larger "permanent" exception
- * to its own purge policy.
+ * The seeded scenario documents are this repo's own content, not a
+ * visitor's upload — the 1-hour privacy guarantee on the page is about
+ * user data, not about these fixtures. They still get a bound (24h)
+ * rather than living forever, so an unattended demo doesn't accumulate an
+ * ever-larger "permanent" exception to its own purge policy.
  */
-const SAMPLE_TTL_MS = 24 * 60 * 60 * 1000;
+const SCENARIO_TTL_MS = 24 * 60 * 60 * 1000;
 
 /**
  * In-memory registry of ingested documents.
@@ -49,7 +51,14 @@ export class DocumentsService {
   private readonly registry = new Map<string, DocumentRecord>();
   private readonly ttlMs: number;
   private readonly maxSizeBytes: number;
-  private samplePromise: Promise<DocumentResponseDto> | null = null;
+  /** Independent in-flight dedup per scenario — 3 scenarios can be
+   * ingested concurrently by different visitors without sharing one slot. */
+  private readonly scenarioPromises = new Map<
+    ScenarioKey,
+    Promise<DocumentResponseDto>
+  >();
+  /** The 3 asset files never change at runtime, so read them once. */
+  private scenarioTextCache: Map<ScenarioKey, string> | null = null;
 
   constructor(
     configService: ConfigService<{ app: AppConfig }, true>,
@@ -82,40 +91,82 @@ export class DocumentsService {
     return this.ingestText(randomUUID(), text, file.originalname, this.ttlMs);
   }
 
-  /** Idempotent within the sample's TTL — re-ingesting the same file wastes embedding calls. */
-  async ingestSample(): Promise<DocumentResponseDto> {
-    const existing = this.registry.get(SAMPLE_DOCUMENT_ID);
+  /** Idempotent within the scenario's TTL — re-ingesting the same file wastes embedding calls. */
+  async ingestScenario(key: ScenarioKey): Promise<DocumentResponseDto> {
+    const scenario = getScenario(key);
+    if (!scenario) {
+      throw new NotFoundException(`Unknown scenario "${key}".`);
+    }
+
+    const existing = this.registry.get(scenario.documentId);
     if (existing && existing.expiresAt > Date.now()) {
       return this.toDto(existing);
     }
 
-    // Concurrent first requests must not each kick off their own ingestion —
-    // the promise is cached so every caller awaits the same in-flight work.
-    if (!this.samplePromise) {
-      this.samplePromise = readFile(
-        join(__dirname, '..', '..', 'assets', 'sample-document.txt'),
-        'utf-8',
-      )
+    // Concurrent first requests for the same scenario must not each kick
+    // off their own ingestion — the promise is cached so every caller
+    // awaits the same in-flight work. Independent per scenario key.
+    let promise = this.scenarioPromises.get(key);
+    if (!promise) {
+      promise = this.loadScenarioText(key)
         .then((text) =>
           this.ingestText(
-            SAMPLE_DOCUMENT_ID,
+            scenario.documentId,
             text,
-            'RAG Engineering Notes (sample document)',
-            SAMPLE_TTL_MS,
+            scenario.name,
+            SCENARIO_TTL_MS,
+            key,
+            scenario.description,
           ),
         )
         .finally(() => {
-          this.samplePromise = null;
+          this.scenarioPromises.delete(key);
         });
+      this.scenarioPromises.set(key, promise);
     }
-    return this.samplePromise;
+    return promise;
+  }
+
+  /**
+   * The picker and preview modal need the scenarios' names, descriptions,
+   * suggested questions and full text before any embedding happens — this
+   * reads the asset files only, no Ollama/Qdrant call, so it's cheap
+   * enough to hit on every page load.
+   */
+  async getScenarioCatalog(): Promise<ScenarioCatalogDto[]> {
+    return Promise.all(
+      SCENARIOS.map(async (scenario) => ({
+        key: scenario.key,
+        name: scenario.name,
+        description: scenario.description,
+        suggestedQuestions: scenario.suggestedQuestions,
+        text: await this.loadScenarioText(scenario.key),
+      })),
+    );
+  }
+
+  private async loadScenarioText(key: ScenarioKey): Promise<string> {
+    this.scenarioTextCache ??= new Map();
+    const cached = this.scenarioTextCache.get(key);
+    if (cached !== undefined) return cached;
+
+    const scenario = getScenario(key);
+    if (!scenario) {
+      throw new NotFoundException(`Unknown scenario "${key}".`);
+    }
+    const text = await readFile(
+      join(__dirname, '..', '..', 'assets', scenario.assetFile),
+      'utf-8',
+    );
+    this.scenarioTextCache.set(key, text);
+    return text;
   }
 
   assertExists(documentId: string): void {
     const record = this.registry.get(documentId);
     if (!record || record.expiresAt <= Date.now()) {
       throw new NotFoundException(
-        'This document has expired or was never uploaded. Upload a PDF or try the sample document again.',
+        'This document has expired or was never uploaded. Upload a PDF or pick a scenario again.',
       );
     }
   }
@@ -137,6 +188,8 @@ export class DocumentsService {
     text: string,
     originalName: string,
     ttlMs: number,
+    scenarioKey?: ScenarioKey,
+    scenarioDescription?: string,
   ): Promise<DocumentResponseDto> {
     const chunks = this.chunking.chunk(text);
     if (chunks.length === 0) {
@@ -163,6 +216,8 @@ export class DocumentsService {
       createdAt: now,
       expiresAt,
       chunkCount: chunks.length,
+      scenarioKey,
+      scenarioDescription,
     };
     this.registry.set(documentId, record);
 
@@ -175,6 +230,8 @@ export class DocumentsService {
       chunkCount: record.chunkCount,
       originalName: record.originalName,
       expiresAt: new Date(record.expiresAt).toISOString(),
+      scenarioKey: record.scenarioKey,
+      description: record.scenarioDescription,
     };
   }
 }

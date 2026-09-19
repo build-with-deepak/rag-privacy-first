@@ -2,20 +2,13 @@ import { Component, OnDestroy, computed, inject, input, signal } from '@angular/
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { QueryService } from '../../core/query.service';
-import { RetrievedChunk, SAMPLE_DOCUMENT_ID } from '../../core/models';
+import { RetrievedChunk } from '../../core/models';
 
-/**
- * Worded to require synthesis across more than one section of the sample
- * document (see apps/api/assets/sample-document.txt) — a single-fact lookup
- * wouldn't demonstrate retrieval the way a question spanning two sections
- * does, since the model has to draw on several of the four retrieved chunks
- * at once rather than restate the one passage that happens to match.
- */
-const EXAMPLE_PROMPTS = [
-  'What problem does RAG solve, and how do citations make its answers trustworthy?',
-  "Why would a bank or hospital run the model locally instead of calling a cloud API, and what's the trade-off?",
-  'How do chunking and retrieval work together, and why does chunk overlap matter?',
-];
+interface ProgressStep {
+  label: string;
+  meta: string | null;
+  state: 'pending' | 'active' | 'done';
+}
 
 @Component({
   selector: 'app-chat',
@@ -30,11 +23,10 @@ export class ChatComponent implements OnDestroy {
   readonly documentId = input.required<string>();
   readonly documentName = input<string | undefined>(undefined);
 
-  /** The guided prompts are worded against the sample document's content —
-   * only shown when that's what's actually loaded, so they don't mislead a
-   * visitor who uploaded their own PDF. */
-  readonly isSampleDocument = computed(() => this.documentId() === SAMPLE_DOCUMENT_ID);
-  readonly examplePrompts = EXAMPLE_PROMPTS;
+  /** Worded by the active scenario's own content — empty for a visitor's
+   * own PDF upload, since a scenario's suggested question wouldn't
+   * necessarily have an answer in someone else's document. */
+  readonly examplePrompts = input<string[]>([]);
 
   readonly question = signal('');
   readonly isStreaming = signal(false);
@@ -47,20 +39,34 @@ export class ChatComponent implements OnDestroy {
   readonly errorMessage = signal<string | null>(null);
 
   /**
-   * A single, always-current phrase describing what's happening right now.
-   * The retrieval and answer panels already show real results as they
-   * arrive, but there is a real gap between "you clicked Ask" and "the
-   * first passage shows up" — often a second or two against a self-hosted
-   * model — where nothing on screen said anything was happening at all.
-   * This fills that gap with the truth: which stage is running, not a
-   * generic spinner.
+   * The real stages of a request, in order, each shown as its own line that
+   * stays visible (with a checkmark and, once known, real timing) rather
+   * than being replaced by the next stage's text. There is a real gap
+   * between "you clicked Ask" and "the first passage shows up" — often a
+   * second or two against a self-hosted model — where nothing on screen
+   * said anything was happening at all; this fills that gap with the
+   * truth about which stage is running, built from the same `retrieval`
+   * event data the retrieval panel below already renders.
    */
-  readonly statusMessage = computed(() => {
-    if (!this.isStreaming()) return null;
-    if (this.queuePosition() !== null) return null; // the queue banner covers this case
-    if (this.chunks().length === 0) return 'Searching the document for relevant passages…';
-    if (!this.answer()) return 'Found the relevant passages — asking the model to answer…';
-    return null; // the streaming answer itself is now the visible progress
+  readonly progressSteps = computed<ProgressStep[]>(() => {
+    if (!this.isStreaming() || this.queuePosition() !== null) return [];
+    const chunkCount = this.chunks().length;
+    const hasChunks = chunkCount > 0;
+    const hasAnswer = this.answer().length > 0;
+    return [
+      {
+        label: 'Searching the document',
+        meta: hasChunks
+          ? `found ${chunkCount} passage${chunkCount === 1 ? '' : 's'} in ${this.retrievalMs()}ms`
+          : null,
+        state: hasChunks ? 'done' : 'active',
+      },
+      {
+        label: 'Generating the answer',
+        meta: null,
+        state: hasAnswer ? 'done' : hasChunks ? 'active' : 'pending',
+      },
+    ];
   });
 
   /** Populates the input and runs it in one click — no typing required for a first-time visitor. */

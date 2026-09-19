@@ -7,15 +7,25 @@
 export interface DocumentResponse {
   documentId: string;
   chunkCount: number;
-  /** Display name of the ingested document — the uploaded filename, or the sample's label. */
+  /** Display name of the ingested document — the uploaded filename, or the scenario's name. */
   originalName?: string;
   /** ISO 8601 */
   expiresAt: string;
+  /** Set only for seeded scenario documents, absent for uploads. */
+  scenarioKey?: ScenarioKey;
+  description?: string;
 }
 
-/** Mirrors the API's fixed sample document ID — used to decide whether to show the
- * guided example prompts, which are worded against that specific document's content. */
-export const SAMPLE_DOCUMENT_ID = 'sample-document';
+export type ScenarioKey = 'logistics' | 'real-estate' | 'finance';
+
+/** Mirrors the API's ScenarioCatalogDto — the picker and preview modal's data source. */
+export interface ScenarioCatalogItem {
+  key: ScenarioKey;
+  name: string;
+  description: string;
+  suggestedQuestions: string[];
+  text: string;
+}
 
 export interface RetrievedChunk {
   chunkIndex: number;

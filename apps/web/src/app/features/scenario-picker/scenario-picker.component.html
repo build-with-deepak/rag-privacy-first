@@ -1,0 +1,63 @@
+<div class="picker">
+  <p class="picker-eyebrow">Choose a business scenario</p>
+
+  @if (loadingCatalog()) {
+    <p class="picker-status">Loading scenarios&hellip;</p>
+  } @else {
+    <div class="bwd-grid bwd-grid--3">
+      @for (scenario of scenarios(); track scenario.key) {
+        <div class="bwd-card bwd-card--interactive scenario-card">
+          <div class="scenario-card-head">
+            <span class="bwd-plate scenario-plate" aria-hidden="true">{{ icons[scenario.key] }}</span>
+            <p class="bwd-card-title scenario-title">{{ scenario.name }}</p>
+          </div>
+
+          <div class="scenario-actions">
+            <button
+              type="button"
+              class="bwd-btn bwd-btn--primary scenario-btn"
+              [disabled]="ingestingKey() !== null"
+              (click)="use(scenario.key)"
+            >
+              {{ ingestingKey() === scenario.key ? 'Loading…' : 'Use this scenario' }}
+            </button>
+            <button
+              type="button"
+              class="bwd-btn bwd-btn--ghost scenario-btn"
+              [disabled]="ingestingKey() !== null"
+              (click)="preview(scenario.key)"
+            >
+              View document
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (error()) {
+    <p class="picker-error">{{ error() }}</p>
+  }
+</div>
+
+<app-info-modal
+  [title]="previewScenario()?.name ?? ''"
+  [open]="previewKey() !== null"
+  (closed)="closePreview()"
+>
+  @if (previewScenario(); as scenario) {
+    <section class="preview-questions">
+      <p class="preview-heading">Suggested questions</p>
+      <ul>
+        @for (question of scenario.suggestedQuestions; track question) {
+          <li>{{ question }}</li>
+        }
+      </ul>
+    </section>
+
+    <section class="preview-document">
+      <p class="preview-heading">Source document</p>
+      <pre class="preview-text">{{ scenario.text }}</pre>
+    </section>
+  }
+</app-info-modal>

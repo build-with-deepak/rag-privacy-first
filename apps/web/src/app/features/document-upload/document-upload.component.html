@@ -22,8 +22,6 @@
       </label>
       <p class="dropzone-hint">PDF only, up to 15MB. Parsed in memory — never written to disk.</p>
     </div>
-
-    <div class="divider"><span>or</span></div>
   } @else {
     <div class="locked">
       <p class="locked-title">Want to ask questions of your own documents?</p>
@@ -37,10 +35,6 @@
       </button>
     </div>
   }
-
-  <button class="sample-button" type="button" (click)="useSample()" [disabled]="isUploading()">
-    {{ canUpload() ? 'Try the sample document instead' : 'Continue with the sample document' }}
-  </button>
 
   @if (isUploading()) {
     <p class="status status-uploading">Reading and embedding the document&hellip;</p>

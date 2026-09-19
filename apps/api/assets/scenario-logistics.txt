@@ -1,0 +1,95 @@
+Dubai Logistics Co. — Operations Handbook
+
+SECTION 1: COMPANY OVERVIEW
+
+Dubai Logistics Co. operates freight and last-mile delivery across the UAE,
+with regional hubs in Dubai, Abu Dhabi, Jebel Ali, and Sharjah. The company
+runs a mixed fleet of company-owned vans and contracted third-party carriers,
+and handles both business-to-business freight (pallets, container-scale
+shipments through Jebel Ali port) and business-to-consumer last-mile
+delivery. This handbook is the reference the operations team uses to decide
+what to do when a shipment does not go as planned.
+
+SECTION 2: SHIPPING SOP
+
+Every shipment is assigned a tracking ID in the format DXB-#### at the point
+of booking. A shipment moves through five states in order: booked, at
+origin warehouse, in transit, at destination warehouse, delivered. A
+shipment cannot skip a state — if a shipment shows "in transit" without ever
+having shown "at origin warehouse," that is a data error to be corrected
+before any customer-facing status is given. Drivers update shipment state
+from a handheld scanner at each warehouse gate; manual state changes by
+dispatch staff must include a note explaining why the automated scan was
+not used.
+
+International shipments (crossing into Oman, Saudi Arabia, or further) add
+a customs-clearance sub-state between "in transit" and "at destination
+warehouse." Customs clearance is the single largest source of delay on
+international lanes and is not within the company's direct control, but
+dispatch is still responsible for proactively notifying the customer once
+a shipment has been in customs-clearance for more than 24 hours.
+
+SECTION 3: WAREHOUSE SOP
+
+Each regional warehouse operates with a target capacity utilization of no
+more than 85%. When a warehouse's dashboard shows utilization above 85%,
+incoming shipments should be rerouted to the nearest warehouse with
+available capacity rather than queued, because queuing at a full warehouse
+is the most common root cause of downstream delivery delays. Warehouse
+staff are required to log any pallet or package showing visible damage on
+arrival, before it is shelved — damage logged after shelving cannot be
+reliably attributed to transit versus warehouse handling, which matters for
+insurance claims (see Section 6).
+
+SECTION 4: DELIVERY SLA
+
+The standard delivery SLA is 48 hours from "at destination warehouse" to
+"delivered" for last-mile shipments within the same emirate, and 72 hours
+for cross-emirate last-mile delivery. International freight SLAs are
+quoted per shipment at booking time and are not covered by this standard
+window, because customs clearance timing varies too much to commit to a
+fixed number.
+
+A shipment is considered at risk of breaching its SLA once it has used 75%
+of its allotted window without reaching "delivered." At-risk shipments are
+automatically flagged on the operations dashboard and should be checked
+for an available alternative vehicle or driver before the SLA is actually
+breached, not after.
+
+SECTION 5: CUSTOMER ESCALATION POLICY
+
+When a shipment misses its delivery window, the operations team follows
+this sequence: first, check the shipment's current state and the reason
+for delay (customs, warehouse capacity, vehicle breakdown, or driver
+unavailability); second, check whether an alternative vehicle or driver is
+available at the shipment's current location; third, if an alternative is
+available, reroute and notify the customer with a revised ETA; fourth, if
+no alternative is available, open a customer escalation case and offer a
+choice between waiting for the original vehicle or a partial delivery of
+what is available.
+
+A customer escalation case must be created (not just a note added to the
+shipment) whenever a delay exceeds 4 hours past the SLA window, because
+escalation cases are what trigger the compensation policy in Section 6 and
+are tracked separately by the customer support team.
+
+SECTION 6: INSURANCE AND DAMAGE CLAIMS
+
+All shipments are insured against loss and damage in transit through the
+company's insurance vendor, Gulf Cargo Assurance. A damage claim requires:
+the shipment's tracking ID, a warehouse-logged damage note (see Section 3)
+or a delivery-time damage report signed by the recipient, and photos of the
+damaged item. Claims without a warehouse-logged damage note and without a
+signed delivery-time report cannot be processed, because there is no way
+to establish when in the shipment's journey the damage occurred. Approved
+claims are settled within 10 business days of the vendor's confirmation.
+
+SECTION 7: VENDOR AGREEMENTS
+
+Third-party carriers used for overflow capacity during peak season operate
+under a standard vendor agreement requiring: proof of insurance coverage
+matching or exceeding the company's own policy, GPS tracking integration
+with the company's dispatch system, and a maximum sub-contracted delivery
+window equal to the company's own SLA in Section 4 — a third-party carrier
+cannot offer a customer a longer window than the company's own standard
+without written approval from the operations manager.

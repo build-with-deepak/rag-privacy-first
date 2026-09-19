@@ -2,7 +2,7 @@
 # network by service name); web is the only one that binds a host port, and
 # even that is bound to localhost — the VPS's own nginx (already fronting
 # build-with-deepak.com and its sibling subdomains) reverse-proxies
-# rag.build-with-deepak.com to 127.0.0.1:8090 and terminates TLS there. See
+# rag.build-with-deepak.com to 127.0.0.1:8091 and terminates TLS there. See
 # nginx/rag.build-with-deepak.com.conf for that host-level config.
 #
 # Ollama is NOT a service here — it's already running on the VPS outside
@@ -54,7 +54,7 @@ services:
     depends_on:
       - api
     ports:
-      - '127.0.0.1:8090:80'
+      - '127.0.0.1:8091:80'
 
 volumes:
   qdrant_storage:

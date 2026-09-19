@@ -2,6 +2,8 @@ import { memoryStorage } from 'multer';
 import {
   BadRequestException,
   Controller,
+  Get,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -10,6 +12,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { RequireScopes } from '../auth/scopes.decorator';
 import { DocumentsService } from './documents.service';
 import { DocumentResponseDto } from './dto/document-response.dto';
+import { ScenarioCatalogDto } from './dto/scenario-catalog.dto';
+import { ScenarioKey } from './scenarios';
 
 /**
  * `memoryStorage()`, not disk storage — see the note on PdfExtractionService.
@@ -55,12 +59,25 @@ export class DocumentsController {
   }
 
   /**
-   * Ingests the bundled sample document. Left open to the demo account on
-   * purpose — it is a fixed, known file rather than visitor-supplied bytes,
-   * so it costs one bounded ingestion and nothing unbounded.
+   * The 3 seeded scenario documents, with full text and suggested
+   * questions — readable before any ingestion happens, so the picker and
+   * preview modal have something to show before a visitor commits to one.
    */
-  @Post('sample')
-  async sample(): Promise<DocumentResponseDto> {
-    return this.documents.ingestSample();
+  @Get('scenarios')
+  async scenarios(): Promise<ScenarioCatalogDto[]> {
+    return this.documents.getScenarioCatalog();
+  }
+
+  /**
+   * Ingests one of the bundled scenario documents. Left open to the demo
+   * account on purpose — these are fixed, known files rather than
+   * visitor-supplied bytes, so each costs one bounded ingestion and
+   * nothing unbounded.
+   */
+  @Post('scenario/:key')
+  async scenario(
+    @Param('key') key: string,
+  ): Promise<DocumentResponseDto> {
+    return this.documents.ingestScenario(key as ScenarioKey);
   }
 }

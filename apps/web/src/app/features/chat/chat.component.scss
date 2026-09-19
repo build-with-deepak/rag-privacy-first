@@ -212,14 +212,43 @@
   color: var(--text-muted);
 }
 
-// The "what's happening right now" status line — see ChatComponent.statusMessage().
-.status-line {
+// The real stages of a request, each its own line that stays visible once
+// done instead of being swapped out by the next stage — see
+// ChatComponent.progressSteps().
+.progress-steps {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  flex-direction: column;
+  gap: 0.5rem;
   margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progress-step {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
   font-size: 0.85rem;
   font-weight: 600;
+  color: var(--text-muted);
+}
+
+.progress-step.step-done {
+  color: var(--text);
+}
+
+.step-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  flex-shrink: 0;
+  color: var(--success);
+  font-weight: 700;
+}
+
+.step-meta {
+  font-weight: 500;
   color: var(--text-muted);
 }
 
