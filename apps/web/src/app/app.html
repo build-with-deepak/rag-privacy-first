@@ -1,19 +1,16 @@
-<app-site-header />
+<app-demo-header />
 
 @if (!auth.isAuthenticated()) {
-  <app-login />
+  <app-auth-panel demo="rag" />
 } @else {
   <div class="page">
     <header class="page-header">
-      <div class="session-row">
-        <span class="session-badge">Demo session</span>
-        <button class="logout" type="button" (click)="logout()">Sign out</button>
-      </div>
       <p class="eyebrow">Privacy-First RAG</p>
       <h1>Ask your document. Nothing leaves this server.</h1>
       <p class="subtitle">
         Retrieval-augmented generation on a self-hosted Llama 3 via Ollama — built for cases
-        where data can't leave the client's infrastructure. Upload a PDF or try the sample.
+        where data can't leave the client's infrastructure. Try the sample document, or
+        register to upload your own.
       </p>
     </header>
 
@@ -26,22 +23,32 @@
         server. Hard part: getting citation accuracy and retrieval quality out of a local model
         without a cloud API to fall back on.
       </p>
+      @if (auth.isDemo()) {
+        <p class="explainer-session">
+          <strong>Demo account:</strong> query the pre-indexed sample document freely. It is
+          read-only, so uploading your own file requires a free account.
+        </p>
+      }
     </section>
 
-    <main class="page-main">
-      @if (document(); as doc) {
-        <div class="document-bar">
-          <span>Document ready — {{ doc.chunkCount }} chunks indexed{{ doc.originalName ? ' from ' + doc.originalName : '' }}.</span>
-          <button class="reset-button" type="button" (click)="reset()">Try a different document</button>
-        </div>
-        <app-chat [documentId]="doc.documentId" [documentName]="doc.originalName" />
-      } @else {
-        <app-document-upload (ingested)="onIngested($event)" />
-      }
-    </main>
+    <div class="workspace">
+      <main class="page-main">
+        @if (document(); as doc) {
+          <div class="document-bar">
+            <span>Document ready — {{ doc.chunkCount }} chunks indexed{{ doc.originalName ? ' from ' + doc.originalName : '' }}.</span>
+            <button class="reset-button" type="button" (click)="reset()">Try a different document</button>
+          </div>
+          <app-chat [documentId]="doc.documentId" [documentName]="doc.originalName" />
+        } @else {
+          <app-document-upload (ingested)="onIngested($event)" />
+        }
+      </main>
+
+      <app-demo-guide [showRegisterNote]="!auth.canUpload()" />
+    </div>
 
     <app-how-its-built />
   </div>
 }
 
-<app-brand-footer current="rag" />
+<app-demo-footer />

@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from './core/auth.service';
-import { BrandFooterComponent } from './core/brand-footer.component';
+import { AuthPanelComponent } from './core/auth-panel.component';
+import { DemoFooterComponent } from './core/demo-footer.component';
+import { DemoHeaderComponent } from './core/demo-header.component';
 import { HowItsBuiltComponent } from './core/how-its-built.component';
-import { SiteHeaderComponent } from './core/site-header.component';
 import { ChatComponent } from './features/chat/chat.component';
 import { DocumentUploadComponent } from './features/document-upload/document-upload.component';
-import { LoginComponent } from './features/login/login.component';
+import { DemoGuideComponent } from './core/demo-guide.component';
 import { DocumentResponse } from './core/models';
 
 @Component({
@@ -13,10 +14,11 @@ import { DocumentResponse } from './core/models';
   imports: [
     DocumentUploadComponent,
     ChatComponent,
-    LoginComponent,
-    BrandFooterComponent,
-    SiteHeaderComponent,
+    AuthPanelComponent,
+    DemoFooterComponent,
+    DemoHeaderComponent,
     HowItsBuiltComponent,
+    DemoGuideComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',

@@ -46,6 +46,23 @@ export class ChatComponent implements OnDestroy {
   readonly answer = signal('');
   readonly errorMessage = signal<string | null>(null);
 
+  /**
+   * A single, always-current phrase describing what's happening right now.
+   * The retrieval and answer panels already show real results as they
+   * arrive, but there is a real gap between "you clicked Ask" and "the
+   * first passage shows up" — often a second or two against a self-hosted
+   * model — where nothing on screen said anything was happening at all.
+   * This fills that gap with the truth: which stage is running, not a
+   * generic spinner.
+   */
+  readonly statusMessage = computed(() => {
+    if (!this.isStreaming()) return null;
+    if (this.queuePosition() !== null) return null; // the queue banner covers this case
+    if (this.chunks().length === 0) return 'Searching the document for relevant passages…';
+    if (!this.answer()) return 'Found the relevant passages — asking the model to answer…';
+    return null; // the streaming answer itself is now the visible progress
+  });
+
   /** Populates the input and runs it in one click — no typing required for a first-time visitor. */
   askExample(prompt: string): void {
     if (this.isStreaming()) return;

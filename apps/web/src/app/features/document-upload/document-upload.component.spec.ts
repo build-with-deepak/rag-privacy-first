@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DocumentUploadComponent } from './document-upload.component';
+import { AuthService } from '../../core/auth.service';
 import { DocumentsService } from '../../core/documents.service';
 import { DocumentResponse } from '../../core/models';
 
@@ -10,14 +11,21 @@ function pdfFile(sizeBytes: number, type = 'application/pdf'): File {
 describe('DocumentUploadComponent', () => {
   let uploadPdf: ReturnType<typeof vi.fn>;
   let useSample: ReturnType<typeof vi.fn>;
+  let logout: ReturnType<typeof vi.fn>;
+  let canUpload: boolean;
 
   beforeEach(async () => {
     uploadPdf = vi.fn();
     useSample = vi.fn();
+    logout = vi.fn();
+    canUpload = true;
 
     await TestBed.configureTestingModule({
       imports: [DocumentUploadComponent],
-      providers: [{ provide: DocumentsService, useValue: { uploadPdf, useSample } }],
+      providers: [
+        { provide: DocumentsService, useValue: { uploadPdf, useSample } },
+        { provide: AuthService, useValue: { canUpload: () => canUpload, logout } },
+      ],
     }).compileComponents();
   });
 
@@ -103,5 +111,51 @@ describe('DocumentUploadComponent', () => {
     await component.useSample();
 
     expect(emitted).toEqual([response]);
+  });
+
+  /**
+   * The demo account's restriction, from the interface's side.
+   *
+   * The API enforces this independently — these assertions are about not
+   * showing someone a control that will 403 when they use it, and about
+   * turning that moment into the registration prompt instead.
+   */
+  describe('when the session cannot upload', () => {
+    beforeEach(() => {
+      canUpload = false;
+    });
+
+    it('replaces the dropzone with an explanation and a way to register', () => {
+      const host = create().nativeElement as HTMLElement;
+
+      expect(host.querySelector('.dropzone')).toBeNull();
+      expect(host.querySelector('input[type="file"]')).toBeNull();
+      expect(host.querySelector('.locked')).not.toBeNull();
+      expect(host.querySelector('.locked-cta')?.textContent).toContain('Create a free account');
+    });
+
+    it('still offers the sample document, so the demo remains usable', () => {
+      const host = create().nativeElement as HTMLElement;
+      const sample = host.querySelector('.sample-button');
+
+      expect(sample).not.toBeNull();
+      expect(sample?.textContent).toContain('sample document');
+    });
+
+    it('ends the shared demo session when registration is chosen', () => {
+      const fixture = create();
+      (fixture.nativeElement as HTMLElement)
+        .querySelector<HTMLButtonElement>('.locked-cta')!
+        .click();
+
+      expect(logout).toHaveBeenCalled();
+    });
+  });
+
+  it('shows the dropzone when the session may upload', () => {
+    const host = create().nativeElement as HTMLElement;
+
+    expect(host.querySelector('.dropzone')).not.toBeNull();
+    expect(host.querySelector('.locked')).toBeNull();
   });
 });

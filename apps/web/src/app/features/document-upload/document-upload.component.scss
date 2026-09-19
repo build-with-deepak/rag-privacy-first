@@ -2,8 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 32rem;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .dropzone {
@@ -99,3 +98,43 @@
   text-align: center;
   margin: 0.5rem 0 0;
 }
+
+/* The demo account's explanation, in place of a dropzone it cannot use.
+   Styled as a quiet informational panel rather than an error: nothing has
+   gone wrong, and this is an invitation, not a rejection. */
+.locked {
+  padding: 1.25rem;
+  border-radius: var(--bwd-radius, 0.875rem);
+  border: 1px dashed var(--bwd-accent-border, #bfdbfe);
+  background: var(--bwd-accent-bg, #eff6ff);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.locked-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--bwd-ink, #0b1220);
+}
+
+.locked-copy {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--bwd-body, #475569);
+}
+
+.locked-cta {
+  padding: 0.65rem 1.2rem;
+  border-radius: var(--bwd-radius-sm, 0.625rem);
+  border: none;
+  background: var(--bwd-accent, #2563eb);
+  color: #fff;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.locked-cta:hover { background: var(--bwd-accent-strong, #1d4ed8); }

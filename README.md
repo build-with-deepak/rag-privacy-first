@@ -21,15 +21,27 @@ nothing sent to a third-party model API.
 
 ## Try it
 
-The demo is account-gated but frictionless: **Continue with demo account**
-issues a real 2-hour session against the real API — same pipeline, same
-models, same citations a registered user would get. Registration
-(persistent accounts whose documents outlive the demo's one-hour purge) is
-in progress; the Register button says so honestly, and so does
-`POST /api/auth/register` (501). Every API surface except health and auth
-requires a session; the query stream accepts the token as a `?token=`
-query param because the browser's `EventSource` cannot set headers — the
-only endpoint where that trade-off exists.
+Two ways in, and one account for all three demos in this suite.
+
+**Try it now — demo account** signs you in with one click against the real
+API: same pipeline, same self-hosted models, same citations. It is a shared
+account and its token carries `demo:read` only, so it can run everything
+here and cannot make the server store anything. That is what lets the front
+door stay open to anyone without putting a single VPS at the mercy of
+whoever finds it.
+
+**Create a free account** — first name, last name, email, optional phone,
+then a six-digit code. No password to invent. A verified account carries
+`demo:read demo:write`, which is what unlocks uploading your own documents,
+and the same account signs you into the other two demos.
+
+Authentication is handled by a separate service,
+[id.build-with-deepak.com](https://id.build-with-deepak.com). This API does
+not mint tokens — it verifies them against that service's published JWKS, so
+it holds no signing secret and *cannot* issue itself a session. Every
+endpoint except `/health` requires one; the query stream accepts the token
+as a `?token=` query param because the browser's `EventSource` cannot set
+headers — the only endpoint where that trade-off exists.
 
 ## Architecture
 
@@ -214,7 +226,7 @@ pnpm --filter web build && pnpm --filter web test
 
 ## Deploying to the VPS
 
-1. `cp .env.example .env` — set `JWT_SECRET` (required; compose refuses to
+1. `cp .env.example .env` — set the values marked required in it (compose refuses to
    start without it) and confirm `OLLAMA_BASE_URL` actually reaches this
    VPS's Ollama instance (see the comment in `docker-compose.yml` about
    `host.docker.internal`).
@@ -240,8 +252,9 @@ whatever uptime monitor ends up watching this.
 
 - [x] Full RAG pipeline: chunking, embedding, retrieval with visible
       similarity scores, streamed generation, citations
-- [x] Demo-account auth end to end (2h JWT sessions, register = honest 501
-      coming-soon), all API surfaces guarded, `?token=` path for EventSource
+- [x] Identity service integration — one account across all three demos,
+      email-OTP registration, shared read-only demo account, `demo:write`
+      scope enforced on every endpoint that stores anything
 - [x] Guardrails: rate limiting, upload validation, 1-hour auto-purge,
       concurrency cap with visible queue position and a capacity ceiling
 - [x] Builds, lints and passes its full test suite (API: unit + e2e;
@@ -252,7 +265,6 @@ whatever uptime monitor ends up watching this.
       environment had neither installed. Verify the full pipeline before
       relying on it.
 - [ ] Not yet deployed to the VPS or exercised behind real TLS
-- [ ] Registration/persistent accounts — in progress (demo-first by design)
 - [ ] `status.build-with-deepak.com` — deferred until all three demos are
       deployed; a status page for undeployed services would show nothing
       but red

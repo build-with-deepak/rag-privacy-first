@@ -1,12 +1,8 @@
 /** Mirrors the API's DTOs — kept as plain interfaces rather than a shared
  * package, since a two-app demo isn't worth a monorepo shared-types library. */
 
-export interface DemoSession {
-  accessToken: string;
-  tokenType: 'Bearer';
-  expiresIn: string;
-  user: { id: string; name: string; kind: 'demo' };
-}
+/* The old DemoSession type lived here. Sessions now come from the
+ * identity service and are described in session.models.ts. */
 
 export interface DocumentResponse {
   documentId: string;

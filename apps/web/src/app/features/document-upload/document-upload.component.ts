@@ -1,4 +1,5 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, computed, inject, output, signal } from '@angular/core';
+import { AuthService } from '../../core/auth.service';
 import { DocumentsService } from '../../core/documents.service';
 import { DocumentResponse } from '../../core/models';
 
@@ -11,6 +12,14 @@ const MAX_SIZE_BYTES = 15 * 1024 * 1024;
 })
 export class DocumentUploadComponent {
   private readonly documents = inject(DocumentsService);
+  private readonly auth = inject(AuthService);
+
+  /**
+   * Read straight off the session's `demo:write` scope, so the interface
+   * and the API agree about what this visitor may do without either one
+   * having a second opinion hard-coded in it.
+   */
+  readonly canUpload = computed(() => this.auth.canUpload());
 
   readonly ingested = output<DocumentResponse>();
 
@@ -37,6 +46,16 @@ export class DocumentUploadComponent {
   onFileSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) void this.handleFile(file);
+  }
+
+  /**
+   * Ends the shared demo session and returns to the sign-in panel, which
+   * offers registration. Signing out first is deliberate: a visitor holding
+   * a demo session who "creates an account" must not end up with two
+   * sessions and no idea which one they are using.
+   */
+  signOutToRegister(): void {
+    this.auth.logout();
   }
 
   async useSample(): Promise<void> {

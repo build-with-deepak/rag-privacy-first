@@ -111,20 +111,32 @@ export class OllamaService {
   }
 
   private async request(path: string, body: unknown): Promise<Response> {
+    // Without this, a half-open connection (the failure mode an SSH tunnel
+    // to a remote Ollama actually produces, versus a clean "connection
+    // refused") leaves this fetch pending indefinitely — no error, no
+    // response, just a visitor staring at a spinner forever. 20s is
+    // generous enough to cover Ollama loading an unloaded model from disk.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20_000);
+
     let res: Response;
     try {
       res = await fetch(`${this.config.baseUrl}${path}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
+        signal: controller.signal,
       });
     } catch (err) {
+      const timedOut = (err as Error).name === 'AbortError';
       this.logger.error(
-        `Ollama request to ${path} failed: ${(err as Error).message}`,
+        `Ollama request to ${path} failed: ${timedOut ? 'timed out after 20s' : (err as Error).message}`,
       );
       throw new ServiceUnavailableException(
         'The local model is unreachable right now — it may be cold-starting. Try again in a few seconds.',
       );
+    } finally {
+      clearTimeout(timer);
     }
 
     if (!res.ok) {

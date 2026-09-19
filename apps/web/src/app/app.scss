@@ -5,10 +5,35 @@
   padding: 3rem 1.5rem 2.5rem;
 }
 
+/*
+ * One page-header pattern, one container width, used identically across
+ * all three demos (RAG, MCP Agent, Router's playground and dashboard) —
+ * this was the actual bug behind "the width feels inconsistent moving
+ * between pages": this header was capped at 44rem while the working area
+ * below it was 72rem, and the other two demos had no equivalent header at
+ * all. 76rem is the shared width now; nothing on the page is ever
+ * narrower than the page itself.
+ */
 .page-header {
-  max-width: 44rem;
+  max-width: 76rem;
+  width: 100%;
   margin: 0 auto 2.5rem;
-  text-align: center;
+}
+
+.workspace {
+  max-width: 76rem;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 64rem) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .session-row {
@@ -65,10 +90,15 @@ h1 {
   font-size: 0.9375rem;
   line-height: 1.6;
   margin: 0;
+  /* The header block itself is full width now (76rem, matching every
+     other box on the page); this cap is on the PARAGRAPH only, so a long
+     line of prose doesn't stretch edge to edge and become hard to read.
+     It has no effect on how wide the header bar reads as a whole. */
+  max-width: 42rem;
 }
 
 .explainer-panel {
-  max-width: 44rem;
+  max-width: 76rem;
   width: 100%;
   margin: 0 auto 2rem;
   padding: 1.1rem 1.25rem;
@@ -81,6 +111,7 @@ h1 {
     font-size: 0.85rem;
     line-height: 1.6;
     color: var(--text-muted);
+    max-width: 58rem;
   }
 
   .explainer-title {
@@ -93,6 +124,17 @@ h1 {
   }
 }
 
+.explainer-session {
+  margin-top: 0.85rem !important;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted) !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.55 !important;
+}
+
+.explainer-session strong { color: var(--text); }
+
 .page-main {
   flex: 1;
   display: flex;
@@ -101,9 +143,7 @@ h1 {
 }
 
 .document-bar {
-  max-width: 44rem;
   width: 100%;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;

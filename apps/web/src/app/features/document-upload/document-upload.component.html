@@ -1,23 +1,45 @@
 <div class="upload-card">
-  <div
-    class="dropzone"
-    [class.dragging]="isDragging()"
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave()"
-    (drop)="onDrop($event)"
-  >
-    <p class="dropzone-title">Drop a PDF here, or</p>
-    <label class="file-button">
-      Choose a file
-      <input type="file" accept="application/pdf" (change)="onFileSelected($event)" hidden />
-    </label>
-    <p class="dropzone-hint">PDF only, up to 15MB. Parsed in memory — never written to disk.</p>
-  </div>
+  <!--
+    A demo session is shown why it cannot upload, not a dropzone that will
+    fail on it. The server enforces this independently (the API's
+    ScopesGuard rejects the request whatever this template renders) — but a
+    control that 403s when you use it is a worse experience than one that
+    explains itself, and this explanation is also the moment someone
+    decides to register.
+  -->
+  @if (canUpload()) {
+    <div
+      class="dropzone"
+      [class.dragging]="isDragging()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+    >
+      <p class="dropzone-title">Drop a PDF here, or</p>
+      <label class="file-button">
+        Choose a file
+        <input type="file" accept="application/pdf" (change)="onFileSelected($event)" hidden />
+      </label>
+      <p class="dropzone-hint">PDF only, up to 15MB. Parsed in memory — never written to disk.</p>
+    </div>
 
-  <div class="divider"><span>or</span></div>
+    <div class="divider"><span>or</span></div>
+  } @else {
+    <div class="locked">
+      <p class="locked-title">Want to ask questions of your own documents?</p>
+      <p class="locked-copy">
+        The shared demo account runs everything here against a pre-indexed document,
+        so it stays fast for everyone. Uploading your own file needs a free account —
+        one email, one six-digit code, no password.
+      </p>
+      <button class="locked-cta" type="button" (click)="signOutToRegister()">
+        Create a free account
+      </button>
+    </div>
+  }
 
   <button class="sample-button" type="button" (click)="useSample()" [disabled]="isUploading()">
-    Try the sample document instead
+    {{ canUpload() ? 'Try the sample document instead' : 'Continue with the sample document' }}
   </button>
 
   @if (isUploading()) {

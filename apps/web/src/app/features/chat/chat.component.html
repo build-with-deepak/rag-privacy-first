@@ -43,6 +43,13 @@
     </p>
   }
 
+  @if (statusMessage(); as status) {
+    <p class="status-line" aria-live="polite">
+      <span class="status-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+      {{ status }}
+    </p>
+  }
+
   @if (errorMessage(); as message) {
     <p class="error-banner">{{ message }}</p>
   }
