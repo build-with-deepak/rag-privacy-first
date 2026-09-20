@@ -114,10 +114,21 @@ export class OllamaService {
     // Without this, a half-open connection (the failure mode an SSH tunnel
     // to a remote Ollama actually produces, versus a clean "connection
     // refused") leaves this fetch pending indefinitely — no error, no
-    // response, just a visitor staring at a spinner forever. 20s is
-    // generous enough to cover Ollama loading an unloaded model from disk.
+    // response, just a visitor staring at a spinner forever.
+    //
+    // 60s, not the 20s this used to be: measured cold-load time for an
+    // unloaded 8B model on the production VPS is 20-32s depending on
+    // memory pressure (multiple demos' models competing for the same
+    // box), so 20s was shorter than a cold start it was meant to survive —
+    // this is the exact path that produced "the local model is unreachable"
+    // on a plain cold start, not an actual outage. OLLAMA_KEEP_ALIVE is
+    // also set to 2h on the VPS now to make cold starts rare rather than
+    // routine, but this timeout should stay generous regardless — a
+    // request timing out here becomes an ugly retry click for a visitor
+    // regardless of how rare it becomes.
+    const OLLAMA_REQUEST_TIMEOUT_MS = 60_000;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 20_000);
+    const timer = setTimeout(() => controller.abort(), OLLAMA_REQUEST_TIMEOUT_MS);
 
     let res: Response;
     try {
@@ -130,7 +141,7 @@ export class OllamaService {
     } catch (err) {
       const timedOut = (err as Error).name === 'AbortError';
       this.logger.error(
-        `Ollama request to ${path} failed: ${timedOut ? 'timed out after 20s' : (err as Error).message}`,
+        `Ollama request to ${path} failed: ${timedOut ? `timed out after ${OLLAMA_REQUEST_TIMEOUT_MS / 1000}s` : (err as Error).message}`,
       );
       throw new ServiceUnavailableException(
         'The local model is unreachable right now — it may be cold-starting. Try again in a few seconds.',
