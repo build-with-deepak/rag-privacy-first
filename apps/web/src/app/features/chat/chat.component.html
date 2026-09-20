@@ -31,9 +31,9 @@
   }
 
   <p class="data-note">
-    Documents you upload are held in memory only long enough to chunk and embed them, then
-    discarded — only the resulting vectors are stored, purged automatically one hour after
-    upload, and never shared with another visitor's session.
+    Documents you upload are held in memory only long enough to chunk and embed them, then discarded
+    — only the resulting vectors are stored, purged automatically one hour after upload, and never
+    shared with another visitor's session.
   </p>
 
   @if (queuePosition(); as position) {
@@ -46,7 +46,11 @@
   @if (progressSteps().length > 0) {
     <ol class="progress-steps" aria-live="polite">
       @for (step of progressSteps(); track step.label) {
-        <li class="progress-step" [class.step-done]="step.state === 'done'" [class.step-active]="step.state === 'active'">
+        <li
+          class="progress-step"
+          [class.step-done]="step.state === 'done'"
+          [class.step-active]="step.state === 'active'"
+        >
           <span class="step-marker" aria-hidden="true">
             @if (step.state === 'done') {
               ✓
@@ -69,6 +73,30 @@
     <p class="error-banner">{{ message }}</p>
   }
 
+  @if (answer()) {
+    <div class="answer-panel">
+      <p class="panel-title">
+        Answer
+        @if (generationMs(); as ms) {
+          <span class="latency">generation {{ ms }}ms</span>
+        }
+        @if (totalMs(); as ms) {
+          <span class="latency">total {{ ms }}ms</span>
+        }
+      </p>
+      <p class="answer-text">
+        {{ answer() }}
+        @if (isStreaming()) {
+          <span class="cursor">&#9611;</span>
+        }
+      </p>
+      <p class="citation-hint">
+        Numbers like [1] refer to the retrieved passages above, so every claim traces back to an
+        exact source chunk.
+      </p>
+    </div>
+  }
+
   @if (chunks().length > 0) {
     <div class="retrieval-panel">
       <p class="panel-title">
@@ -81,8 +109,8 @@
         }
       </p>
       <p class="proof-hint">
-        This is the actual retrieval trail — the exact source passages the model was given,
-        not a description of what it did. Nothing below is generated; it's what was found.
+        This is the actual retrieval trail — the exact source passages the model was given, not a
+        description of what it did. Nothing below is generated; it's what was found.
       </p>
       <ol class="chunk-list">
         @for (chunk of chunks(); track chunk.chunkIndex) {
@@ -95,25 +123,6 @@
           </li>
         }
       </ol>
-    </div>
-  }
-
-  @if (answer()) {
-    <div class="answer-panel">
-      <p class="panel-title">
-        Answer
-        @if (generationMs(); as ms) {
-          <span class="latency">generation {{ ms }}ms</span>
-        }
-        @if (totalMs(); as ms) {
-          <span class="latency">total {{ ms }}ms</span>
-        }
-      </p>
-      <p class="answer-text">{{ answer() }}@if (isStreaming()) {<span class="cursor">&#9611;</span>}</p>
-      <p class="citation-hint">
-        Numbers like [1] refer to the retrieved passages above, so every claim
-        traces back to an exact source chunk.
-      </p>
     </div>
   }
 </div>
