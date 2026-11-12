@@ -1,5 +1,7 @@
 # rag-privacy-first
 
+> **Live:** [lab.build-with-deepak.com/labs/rag](https://lab.build-with-deepak.com/labs/rag?utm_source=github&utm_medium=readme) · Built and run by [Deepak Kumar Jha](https://build-with-deepak.com), Technical Lead · Solution Architect, Dubai.
+
 **Live demo:** not deployed yet — planned at `rag.build-with-deepak.com`. This
 repo is complete and locally verified (see [Local setup](#local-setup)); it
 has not yet been deployed to the VPS or exercised against a real Ollama
